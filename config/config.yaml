@@ -1,0 +1,74 @@
+# Mood-Weather Playlist Generator Configuration
+
+# API Configuration
+apis:
+  spotify:
+    timeout: 30
+    retry_attempts: 3
+  weather:
+    provider: "openweathermap"  # or "weatherapi"
+    timeout: 10
+    cache_duration: 300  # 5 minutes in seconds
+
+# Model Configuration
+model:
+  mood_classifier:
+    type: "random_forest"  # or "neural_network", "svm"
+    features:
+      - "energy"
+      - "valence"
+      - "danceability"
+      - "tempo"
+      - "loudness"
+      - "speechiness"
+      - "acousticness"
+      - "instrumentalness"
+      - "liveness"
+    
+  recommendation:
+    algorithm: "content_based"  # or "collaborative", "hybrid"
+    playlist_size: 30
+    diversity_weight: 0.3
+
+# Mood Categories
+moods:
+  happy:
+    valence_range: [0.6, 1.0]
+    energy_range: [0.5, 1.0]
+  sad:
+    valence_range: [0.0, 0.4]
+    energy_range: [0.0, 0.5]
+  energetic:
+    energy_range: [0.7, 1.0]
+    tempo_range: [120, 200]
+  chill:
+    energy_range: [0.0, 0.4]
+    tempo_range: [60, 110]
+  romantic:
+    valence_range: [0.4, 0.8]
+    acousticness_range: [0.3, 1.0]
+
+# Weather-Mood Mapping
+weather_mood_mapping:
+  sunny:
+    primary_moods: ["happy", "energetic"]
+    secondary_moods: ["romantic"]
+  rainy:
+    primary_moods: ["sad", "chill"]
+    secondary_moods: ["romantic"]
+  cloudy:
+    primary_moods: ["chill", "romantic"]
+    secondary_moods: ["happy"]
+  snowy:
+    primary_moods: ["chill", "romantic"]
+    secondary_moods: ["happy"]
+  stormy:
+    primary_moods: ["energetic", "sad"]
+    secondary_moods: ["chill"]
+
+# Data Collection
+data:
+  batch_size: 100
+  max_tracks_per_playlist: 50
+  audio_features_cache: "data/processed/audio_features.parquet"
+  weather_cache: "data/processed/weather_data.parquet"
