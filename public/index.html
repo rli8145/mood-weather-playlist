@@ -1,43 +1,212 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+import { useState } from "react";
+import { Button } from "./components/ui/button";
+import { Card } from "./components/ui/card";
+import { MoodSelector } from "./components/MoodSelector";
+import { WeatherDisplay } from "./components/WeatherDisplay";
+import { PlaylistGenerator } from "./components/PlaylistGenerator";
+import { Music, MapPin, Sparkles, Github } from "lucide-react";
+import { useToast } from "./hooks/use-toast";
+import heroImage from "./assets/hero-image.jpg";
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+// Mock data for demo purposes
+const mockWeatherData = {
+location: "New York, NY",
+temperature: 22,
+condition: "partly cloudy",
+humidity: 65,
+windSpeed: 12,
+visibility: 10,
+};
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+const mockPlaylistTracks = [
+{
+id: "1",
+name: "Sunny Day",
+artist: "The Weather Band",
+album: "Atmospheric Sounds",
+external_urls: { spotify: "https://open.spotify.com" },
+},
+{
+id: "2",
+name: "Rainy Mood",
+artist: "Cloudy Skies",
+album: "Weather Vibes",
+external_urls: { spotify: "https://open.spotify.com" },
+},
+{
+id: "3",
+name: "Stormy Feelings",
+artist: "Lightning Strike",
+album: "Thunder Songs",
+external_urls: { spotify: "https://open.spotify.com" },
+},
+{
+id: "4",
+name: "Clear Blue Sky",
+artist: "Sunshine Collective",
+album: "Weather Moods",
+external_urls: { spotify: "https://open.spotify.com" },
+},
+{
+id: "5",
+name: "Gentle Breeze",
+artist: "Wind Whispers",
+album: "Natural Sounds",
+external_urls: { spotify: "https://open.spotify.com" },
+},
+];
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
-</html>
+const Index = () => {
+const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [weather, setWeather] = useState<any>(null);
+    const [isLoadingWeather, setIsLoadingWeather] = useState(false);
+    const { toast } = useToast();
+
+    const handleGetWeather = async () => {
+    setIsLoadingWeather(true);
+
+    // Simulate API call
+    setTimeout(() => {
+    setWeather(mockWeatherData);
+    setIsLoadingWeather(false);
+    toast({
+    title: "Weather Retrieved!",
+    description: `Current conditions in ${mockWeatherData.location}: ${mockWeatherData.condition}`,
+    });
+    }, 2000);
+    };
+
+    const handleGeneratePlaylist = async () => {
+    // Simulate playlist generation
+    return new Promise<typeof mockPlaylistTracks>((resolve) => {
+      setTimeout(() => {
+      resolve(mockPlaylistTracks);
+      toast({
+      title: "Playlist Generated!",
+      description: `Created a ${selectedMood} playlist for ${weather?.condition} weather`,
+      });
+      }, 3000);
+      });
+      };
+
+      return (
+      <div className="min-h-screen bg-background">
+        {/* Hero Section */}
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage:
+            `url(${heroImage})` } />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/90" />
+
+          <div className="relative z-10 container mx-auto px-4 text-center">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center justify-center mb-6">
+                <Music className="w-12 h-12 text-primary mr-4 floating" />
+                <h1
+                  className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                  A Playlist Meant For You
+                </h1>
+              </div>
+
+              <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
+                Discover music that perfectly matches your mood and the weather around you.
+                Let AI create your personalized soundtrack.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Button variant="hero" size="lg" className="px-8 py-6 text-lg">
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Start Creating
+                </Button>
+                <Button variant="outline" size="lg" className="px-8 py-6 text-lg bg-background/10 backdrop-blur-sm">
+                  <Github className="w-5 h-5 mr-2" />
+                  Learn More
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                <Card className="p-4 bg-card/30 backdrop-blur-sm border-border/50">
+                  <Music className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <h3 className="font-semibold mb-1">Choose Your Mood</h3>
+                  <p className="text-sm text-muted-foreground">Select how you're feeling right now</p>
+                </Card>
+
+                <Card className="p-4 bg-card/30 backdrop-blur-sm border-border/50">
+                  <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <h3 className="font-semibold mb-1">Get Weather</h3>
+                  <p className="text-sm text-muted-foreground">We'll check your local weather</p>
+                </Card>
+
+                <Card className="p-4 bg-card/30 backdrop-blur-sm border-border/50">
+                  <Sparkles className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <h3 className="font-semibold mb-1">Generate Playlist</h3>
+                  <p className="text-sm text-muted-foreground">AI creates your perfect soundtrack</p>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Main App Section */}
+        <section className="py-20 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Create Your Playlist</h2>
+              <p className="text-lg text-muted-foreground">
+                Follow these simple steps to get your personalized music experience
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              {/* Step 1: Mood Selection */}
+              <div className="flex items-start space-x-4">
+                <div
+                  className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                  1
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold mb-2">Select Your Mood</h3>
+                  <MoodSelector selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
+                </div>
+              </div>
+
+              {/* Step 2: Weather Detection */}
+              <div className="flex items-start space-x-4">
+                <div
+                  className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                  2
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold mb-2">Get Your Weather</h3>
+                  <WeatherDisplay weather={weather} isLoading={isLoadingWeather} onGetWeather={handleGetWeather} />
+                </div>
+              </div>
+
+              {/* Step 3: Playlist Generation */}
+              <div className="flex items-start space-x-4">
+                <div
+                  className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
+                  3
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold mb-2">Generate Your Playlist</h3>
+                  <PlaylistGenerator mood={selectedMood} weather={weather}
+                    onGeneratePlaylist={handleGeneratePlaylist} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-border/50 py-8">
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-muted-foreground">
+              Built with ❤️ using React, Tailwind CSS, and shadcn/ui
+            </p>
+          </div>
+        </footer>
+      </div>
+      );
+      };
+
+      export default Index;
